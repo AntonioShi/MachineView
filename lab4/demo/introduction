@@ -1,0 +1,93 @@
+/*
+ * 利用最大类间方差法，阈值化给定的图像，并利用合适的算法对图像中目标（二维码）进行定位（找出二维码中心位置）。
+提示：可利用hough变换，或者直接调用findContours函数
+要求：
+1.标记出二维码中心位置，用红色十字叉线，并显示中心位置所处的图像坐标
+2.标记出二维码的外围轮廓，计算二维码在图像坐标系中旋转的角度，并显示在图像上。
+3. 测试图片为sample1.png – sample5.png，example.png为一个参考的输出样式
+参考资料：
+1.https://blog.csdn.net/jia20003/article/details/77348170
+2.https://blog.csdn.net/liyuanbhu/article/details/49387483灰度图像的自动阈值分割（Otsu 法）
+3.https://blog.csdn.net/dcrmg/article/details/52216622自适应阈值分割—大津法（OTSU算法）C++实现
+4.https://blog.csdn.net/u012005313/article/details/51945075最大类间方差（大津法OTSU）
+5.https://blog.csdn.net/moses1213/article/details/45202821*/
+
+
+/**1.transform the source image to gray image
+ * 2.transform the gray to binary image by the OTSU:https://blog.csdn.net/liyuanbhu/article/details/49387483
+ * 3.through the EdgeFinding find his edge
+ * 4.根据二维码三个区域的特征，对轮廓进行面积与比例过滤得到最终结果 findContours
+ */
+
+
+    /*code: findcoutours()
+     cv::compare,
+     cv::inRange,
+     cv::threshold,
+     cv::adaptiveThreshold,
+     cv::Canny
+
+void cv::findContours ( InputOutputArray image,
+                        OutputArrayOfArrays contours,
+                        OutputArray hierarchy,
+                        int mode,
+                        int method,
+                        Point   offset = Point()
+                        )
+image:
+输入图像，图像必须为8-bit单通道图像，
+图像中的非零像素将被视为1，0像素保留其像素值，
+故加载图像后会自动转换为二值图像。
+我们同样可以使用cv::compare,
+cv::inRange,
+cv::threshold,
+cv::adaptiveThreshold,
+cv::Canny等函数来创建二值图像，
+
+
+
+如果第四个参数为cv::RETR_CCOMP或cv::RETR_FLOODFILL，
+输入图像可以是32-bit整型图像(CV_32SC1)
+
+
+
+contours:
+检测到的轮廓，每个轮廓都是以点向量的形式进行存储即使用point类型的vector表示
+
+
+
+hierarchy:
+可选的输出向量(std::vector)，包含了图像的拓扑信息，
+作为轮廓数量的表示hierarchy包含了很多元素，
+每个轮廓contours[i]对应hierarchy中hierarchy[i][0]~hierarchy[i][3],
+分别表示后一个轮廓，前一个轮廓，父轮廓，内嵌轮廓的索引，
+如果没有对应项，则相应的hierarchy[i]设置为负数
+
+
+
+mode:
+轮廓检索模式，可以通过cv::RetrievalModes()查看详细信息
+
+
+
+RETR_EXTERNAL:表示只检测最外层轮廓，对所有轮廓设置hierarchy[i][2]=hierarchy[i][3]=-1
+RETR_LIST:提取所有轮廓，并放置在list中，检测的轮廓不建立等级关系
+RETR_CCOMP:提取所有轮廓，并将轮廓组织成双层结构(two-level hierarchy),顶层为连通域的外围边界，次层位内层边界
+RETR_TREE:提取所有轮廓并重新建立网状轮廓结构
+RETR_FLOODFILL：官网没有介绍，应该是洪水填充法
+
+
+
+
+method:
+轮廓近似方法可以通过cv::ContourApproximationModes()查看详细信息
+
+
+
+/*summary
+ *
+    cvtColor(img_origin,img_gray,CV_BGR2GRAY);
+    threshold(img_gray,img_binary,145,255,THRESH_BINARY);
+    imwrite("/home/hon/result.jpg",img_binary);
+    imshow("binary image",img_binary);
+*/

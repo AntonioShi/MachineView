@@ -1,0 +1,88 @@
+Git is a version control system
+git is a free software.
+
+Git is a version control system
+git is a free software.
+
+
+
+# 使用Git管理代码
+
+Linux中安装git:sudo apt-get install git
+$ git config --global user.name "Your Name" 
+$ git config --global user.email "email@example.com" 
+这里用github的账号名和邮箱
+生成SSH 并在github上设置 
+终端里cd 进入.ssh文件夹cd ~/.ssh并ssh-keygen -t rsa -C "email@example.com"生成SSH密匙，保存在.ssh/id_rsa.pub文件中。把生成的密匙复制粘贴到github–>settings–>SSH and GPG keys–>new SSH key中，保存 
+不进行这一步会出现：
+
+The authenticity of host 'github.com (192.30.255.112)' can't be established.
+RSA key fingerprint is SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'github.com,192.30.255.112' (RSA) to the list of known hosts.
+Permission denied (publickey).
+fatal: 无法读取远程仓库。
+请确认您有正确的访问权限并且仓库存在。
+
+
+cd进入要建为仓库的文件夹， 
+git init ——初始化
+git add .——添加所有文件进入仓库
+git commit -m "wrote a readme file"——提交至仓库
+从本地添加至云端仓库 
+git remote add origin git@github.com:××/××.git——××/××是你的账号名/仓库名，云端仓库名一定要和本地仓库名相同
+git push origin master——把本地master分支的最新修改推送至GitHub 
+上一步可能出现报错如下
+Warning: Permanently added the RSA host key for IP address '192.30.255.113' to the list of known hosts.
+To github.com:61305/spiderWeb.git
+ ! [rejected]        master -> master (fetch first)
+error: 无法推送一些引用到 'git@github.com:61305/spiderWeb.git'
+提示：更新被拒绝，因为远程仓库包含您本地尚不存在的提交。这通常是因为另外
+提示：一个仓库已向该引用进行了推送。再次推送前，您可能需要先整合远程变更
+提示：（如 'git pull ...'）。
+提示：详见 'git push --help' 中的 'Note about fast-forwards' 小节。
+
+
+那么安装提示输入git pull，出现
+
+warning: 没有共同的提交
+remote: Counting objects: 3, done.
+remote: Total 3 (delta 0), reused 0 (delta 0), pack-reused 0
+展开对象中: 100% (3/3), 完成.
+来自 github.com:61305/spiderWeb
+ * [新分支]          master     -> origin/master
+当前分支没有跟踪信息。
+请指定您要合并哪一个分支。
+详见 git-pull(1)。
+
+    git pull <远程> <分支>
+
+如果您想要为此分支创建跟踪信息，您可以执行：
+
+    git branch --set-upstream-to=origin/<分支> master
+
+
+接着执行git pull git@github.com:××/××.git master 
+若出现报错
+
+ * branch            master     -> FETCH_HEAD
+fatal: 拒绝合并无关的历史
+
+
+就输入git pull git@github.com:××/××.git master --allow-unrelated-histories 
+成功则提示
+
+ * branch            master     -> FETCH_HEAD
+Merge made by the 'recursive' strategy.
+ README.md | 2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 README.md
+
+ 
+那么继续输入git push -u origin master 
+可以打开登录github发现你的项目已经同步上去了
+--------------------- 
+作者：时光匆匆独白 
+来源：CSDN 
+原文：https://blog.csdn.net/dong_W_/article/details/78787162?utm_source=copy 
+版权声明：本文为博主原创文章，转载请附上博文链接！
